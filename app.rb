@@ -8,6 +8,10 @@ require "lib/cache"
 require "lib/configuration"
 require "lib/models"
 
+Dir["extensions/*.rb"].each do |extension_file|
+  require File.join("extensions", File.basename(extension_file))
+end
+
 set :cache_enabled, Nesta::Configuration.cache
 
 helpers do
@@ -16,11 +20,11 @@ helpers do
       instance_variable_set("@#{var}", Nesta::Configuration.send(var))
     end
   end
-  
+
   def set_from_page(*variables)
     variables.each { |var| instance_variable_set("@#{var}", @page.send(var)) }
   end
-  
+
   def set_title(page)
     if page.respond_to?(:parent) && page.parent
       @title = "#{page.heading} - #{page.parent.heading}"
@@ -28,11 +32,11 @@ helpers do
       @title = "#{page.heading} - #{Nesta::Configuration.title}"
     end
   end
-  
+
   def no_widow(text)
     text.split[0...-1].join(" ") + "&nbsp;#{text.split[-1]}"
   end
-  
+
   def set_common_variables
     @menu_items = Page.menu_items
     @site_title = Nesta::Configuration.title
@@ -42,17 +46,17 @@ helpers do
   def url_for(page)
     File.join(base_url, page.path)
   end
-  
+
   def base_url
     url = "http://#{request.host}"
     request.port == 80 ? url : url + ":#{request.port}"
-  end  
-  
+  end
+
   def nesta_atom_id_for_page(page)
     published = page.date.strftime('%Y-%m-%d')
     "tag:#{request.host},#{published}:#{page.abspath}"
   end
-  
+
   def atom_id(page = nil)
     if page
       page.atom_id || nesta_atom_id_for_page(page)
@@ -60,15 +64,15 @@ helpers do
       "tag:#{request.host},2009:/"
     end
   end
-  
+
   def format_date(date)
     date.strftime("%d %B %Y")
   end
-  
+
   def haml(template, options = {}, locals = {})
     super(template, options.merge(render_options(:haml, template)), locals)
   end
-  
+
   def sass(template, options = {}, locals = {})
     super(template, options.merge(render_options(:sass, template)), locals)
   end
