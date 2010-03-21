@@ -123,7 +123,20 @@ get "/css/:sheet.css" do
   cache sass(params[:sheet].to_sym)
 end
 
+WP_REDIRECTS = {
+  "9"   => "saving-time-and-sanity-with-applescript",
+  "42"  => "problems-difficulties-and-frustrations",
+  "78"  => "writing-good-factories",
+  "84"  => "require-spec-helper",
+  "91"  => "runit-and-delayed-job",
+  "116" => "extending-formtastic-with-a-sprinkle-of-jquery",
+}
+
 get "/" do
+  if new_location = WP_REDIRECTS[params[:p]]
+    redirect new_location, 301
+  end
+
   set_common_variables
   set_from_config(:title, :subtitle, :description, :keywords)
   @heading = @title
