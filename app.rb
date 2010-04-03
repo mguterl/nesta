@@ -130,7 +130,7 @@ get "/" do
   @title = "#{@title} - #{@subtitle}"
   @articles = Page.find_articles[0..7]
   @body_class = "home"
-  cache haml(:index)
+  haml(:index)
 end
 
 get %r{/attachments/([\w/.-]+)} do
