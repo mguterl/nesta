@@ -1,7 +1,7 @@
 class WordpressRedirects
 
   URL_MAPPING = {
-    "9"   => "saving-time-and-sanity-with-applescript",
+    "20"   => "saving-time-and-sanity-with-applescript",
     "42"  => "problems-difficulties-and-frustrations",
     "78"  => "writing-good-factories",
     "84"  => "require-spec-helper",
