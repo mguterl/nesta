@@ -1,5 +1,5 @@
-require File.join(File.dirname(__FILE__), "model_factory")
-require File.join(File.dirname(__FILE__), "spec_helper")
+require File.expand_path("model_factory", File.dirname(__FILE__))
+require File.expand_path("spec_helper", File.dirname(__FILE__))
 
 describe "layout" do
   include ModelFactory
@@ -8,14 +8,14 @@ describe "layout" do
   it "should not include GA JavaScript by default" do
     stub_configuration
     get "/"
-    body.should_not have_tag("script", /_getTracker\("UA-1234"\)/)
+    body.should_not have_tag("script", /'_setAccount', 'UA-1234'/)
   end
   
   it "should include GA JavaScript if configured" do
     stub_env_config_key("google_analytics_code", "UA-1234")
     stub_configuration
     get "/"
-    body.should have_tag("script", /_getTracker\("UA-1234"\)/)
+    body.should have_tag("script", /'_setAccount', 'UA-1234'/)
   end
 end
 
@@ -49,7 +49,7 @@ describe "home page" do
   
   after(:each) do
     remove_fixtures
-    FileModel.purge_cache
+    Nesta::FileModel.purge_cache
   end
   
   it_should_behave_like "page with menus"
@@ -63,11 +63,11 @@ describe "home page" do
   end
   
   it "should display site title in h1 tag" do
-    body.should have_tag("h1", /My blog/)
+    body.should have_tag('#header p.title', /My blog/)
   end
   
   it "should display site subtitle in h1 tag" do
-    body.should have_tag("h1 small", /about stuff/)
+    body.should have_tag('#header p.subtitle', /about stuff/)
   end
   
   it "should set description meta tag" do
@@ -149,7 +149,7 @@ describe "article" do
   
   after(:each) do
     remove_fixtures
-    FileModel.purge_cache
+    Nesta::FileModel.purge_cache
   end
   
   describe "that's not assigned to a category" do
@@ -183,7 +183,7 @@ describe "article" do
   
   describe "that's assigned to categories" do
     before(:each) do
-      # FileModel.purge_cache
+      # Nesta::FileModel.purge_cache
       create_category(:heading => "Apple", :path => "the-apple")
       create_category(:heading => "Banana", :path => "banana")
       article = create_article(
@@ -196,7 +196,7 @@ describe "article" do
     end
     
     it "should link to each category" do
-      body.should have_tag("div.categories", /Filed under/)
+      body.should have_tag("div.categories", /Categories/)
       body.should have_tag("div.categories") do |categories|
         categories.should have_tag("a[@href=/banana]", "Banana")
         categories.should have_tag("a[@href=/the-apple]", "Apple")
@@ -233,7 +233,7 @@ describe "page" do
 
   after(:each) do
     remove_fixtures
-    FileModel.purge_cache
+    Nesta::FileModel.purge_cache
   end
   
   it_should_behave_like "page with menus"
@@ -312,7 +312,7 @@ describe "attachments" do
   def create_attachment
     stub_configuration
     create_content_directories
-    path = File.join(Nesta::Configuration.attachment_path, "test.txt")
+    path = File.join(Nesta::Config.attachment_path, "test.txt")
     File.open(path, "w") { |file| file.write("I'm a test attachment") }
   end
   
@@ -323,7 +323,7 @@ describe "attachments" do
   
   after(:each) do
     remove_fixtures
-    FileModel.purge_cache
+    Nesta::FileModel.purge_cache
   end
   
   it "should be served successfully" do
@@ -335,6 +335,6 @@ describe "attachments" do
   end
   
   it "should set the appropriate MIME type" do
-    last_response.headers["Content-Type"].should == "text/plain"
+    last_response.headers["Content-Type"].should =~ Regexp.new("^text/plain")
   end
 end

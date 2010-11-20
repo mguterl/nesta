@@ -1,5 +1,5 @@
-require File.join(File.dirname(__FILE__), "model_factory")
-require File.join(File.dirname(__FILE__), "spec_helper")
+require File.expand_path("model_factory", File.dirname(__FILE__))
+require File.expand_path("spec_helper", File.dirname(__FILE__))
 
 describe "sitemap XML" do
   include ModelFactory
@@ -17,7 +17,7 @@ describe "sitemap XML" do
   end
   
   after(:each) do
-    FileModel.purge_cache
+    Nesta::FileModel.purge_cache
     remove_fixtures
   end
   
@@ -70,7 +70,7 @@ describe "sitemap XML lastmod" do
   
   after(:each) do
     remove_fixtures
-    FileModel.purge_cache
+    Nesta::FileModel.purge_cache
   end
   
   it "should be set for file based page" do

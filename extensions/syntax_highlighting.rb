@@ -51,6 +51,6 @@ module Nesta
 
 end
 
-FileModel.send(:include, Nesta::SyntaxHighlighting)
-FileModel.send(:include, Nesta::SyntaxHighlighting::PageSyntaxHighlighting)
-Page.send(:include, Nesta::SyntaxHighlighting::BodySyntaxHighlighting)
+Nesta::FileModel.send(:include, Nesta::SyntaxHighlighting)
+Nesta::FileModel.send(:include, Nesta::SyntaxHighlighting::PageSyntaxHighlighting)
+Nesta::Page.send(:include, Nesta::SyntaxHighlighting::BodySyntaxHighlighting)

@@ -1,6 +1,6 @@
 require "rubygems"
 require "sinatra"
-require "app"
+require "./app"
 
 use WordpressRedirects
-run Sinatra::Application
+run Nesta::App
